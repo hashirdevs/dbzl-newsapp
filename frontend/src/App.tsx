@@ -3,7 +3,7 @@ import ArticleList from './components/ArticleList'
 
 function App() {
   return (
-    <div className="App">
+    <div className="App gBG">
       <ArticleList />
     </div>
   );

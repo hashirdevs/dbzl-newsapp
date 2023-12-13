@@ -1,0 +1,16 @@
+.app {
+    position: relative;
+}
+
+.gBG {
+    background: linear-gradient(90deg, #0062ff8f, #dd71fe95);
+    min-height: 100vh;
+    height: auto;
+    width: auto;
+}
+
+@media (max-width: 576px) {
+    .logo{
+        text-align: center;
+    }
+}
