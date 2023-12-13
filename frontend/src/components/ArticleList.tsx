@@ -1,11 +1,40 @@
-import React, { useState } from 'react';
-import {Grid, Stack, TextField, MenuItem, Typography, Chip, AppBar, Toolbar} from '@mui/material'
+import React, { useEffect, useState } from 'react';
+import {Grid, Stack, TextField, MenuItem, Card, CardContent, CardMedia, Typography, Chip, Link, Skeleton, AppBar, Toolbar} from '@mui/material'
 import '../App.css';
 
+interface CardData {
+  title: string;
+  urlToImage: string | null;
+  url: string;
+}
+
 const ArticleList: React.FC = () => {
+  const [data, setData] = useState<CardData[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
   const [activeTopic, setActiveTopic] = useState<string>('Apple');
   const [language, setLanguage] = useState<string>('en')
   const [theme, setTheme] = useState<string>('ltr')
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(`http://127.0.0.1:8000/api/${activeTopic.toLowerCase()}/${language}/`);
+        const result = await response.json();
+        if (Array.isArray(result)) {
+            setData(result);
+        } else {
+            alert('Invalid data format:');
+        }
+      } catch (error) {
+        alert(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [activeTopic, language, theme]);
 
   const handleChipClick = (topic: string) => {
     setActiveTopic(topic)
@@ -63,6 +92,84 @@ const ArticleList: React.FC = () => {
           </Grid>
         </Toolbar>
       </AppBar>
+
+      {loading ? (
+        <>
+          <Grid container>
+            <Grid item xs={12} sm={6} lg={3} px={2} py={2}>
+              <Skeleton variant="rounded" height="250px" animation="wave"/>
+              <Skeleton variant="text" width="90%" animation="wave" />
+              <Skeleton variant="text" width="80%" animation="wave" />
+            </Grid>
+            <Grid item xs={12} sm={6} lg={3} px={2} py={2}>
+              <Skeleton variant="rounded" height="250px" animation="wave"/>
+              <Skeleton variant="text" width="90%" animation="wave" />
+              <Skeleton variant="text" width="80%" animation="wave" />
+            </Grid>
+            <Grid item xs={12} sm={6} lg={3} px={2} py={2}>
+              <Skeleton variant="rounded" height="250px" animation="wave"/>
+              <Skeleton variant="text" width="90%" animation="wave" />
+              <Skeleton variant="text" width="80%" animation="wave" />
+            </Grid>
+            <Grid item xs={12} sm={6} lg={3} px={2} py={2}>
+              <Skeleton variant="rounded" height="250px" animation="wave"/>
+              <Skeleton variant="text" width="90%" animation="wave" />
+              <Skeleton variant="text" width="80%" animation="wave" />
+            </Grid>
+          </Grid>
+        </>
+       
+        
+        
+      ) : (
+
+        <Grid container>
+          {
+            data && data.length > 0 ? (
+              data.map((card, index) => (
+                <Grid item xs={12} sm={6} lg={3} px={2} py={2}>
+                  <Link key={index} href={card.url} target="_blank" underline='none'>
+                    <Card key={index}>
+                      {
+                        card.urlToImage ? (
+                          <CardMedia
+                            component="img"
+                            height="250px"
+                            image={card.urlToImage}
+                            loading="lazy"
+                          />
+                        ) : (
+                          <CardMedia
+                            component="img"
+                            height="250px"
+                            image="https://placehold.co/600x250"
+                            loading="lazy"
+                          />
+                        )
+                      }
+                      
+                      <CardContent>
+                        <Typography key={index} variant="h6">{card.title.slice(0, 50)}...</Typography>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                </Grid>
+              ))
+            ) : (
+              <Grid item xs={12} py={2} sx={{ textAlign:'center' }}>
+                {
+                  language === 'ar' ? (
+                    <Typography variant="h6">لم يتم العثور على أخبار</Typography>
+                  ) : (
+                    <Typography variant="h6">No news found</Typography>
+                  )
+                }
+              </Grid>
+            ) 
+          }
+        </Grid>
+
+      )}
     </div>
   );
 };
