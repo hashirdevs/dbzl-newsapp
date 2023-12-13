@@ -15,3 +15,8 @@ Material UI: https://mui.com/
 - npm install
 - npm install @mui/material @emotion/react @emotion/styled
 - That's it
+
+
+**Performance**
+As this is a simple news app, I will keep structure very simple. Using Skeletons for loading and Fetch on change of Language, Topic or Theme.
+For Theme, there are some complex libraries and styles scripts which change style of children elements etc. but I kept it pretty simple by changing "direction = ltr | rtl", which is also working in this case.
